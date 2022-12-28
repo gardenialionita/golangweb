@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,14 +17,18 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//w.Write([]byte("Homepage"))
 
-	tmpl, err := template.ParseFiles(path.Join("views", "index.html"))
+	tmpl, err := template.ParseFiles(path.Join("views", "index.html"), path.Join("views", "layout.html"))
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Error is happening", http.StatusInternalServerError)
 		return
 	}
 
-	tmpl.Execute(w, nil)
+	data := map[string]string{
+		"content": "Learning Golang Web with XXX",
+	}
+
+	tmpl.Execute(w, data)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Error is happening", http.StatusInternalServerError)
@@ -50,5 +53,22 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Product page: %d", idNumb)
+	//fmt.Fprintf(w, "Product page: %d", idNumb)
+	data := map[string]interface{}{
+		"content": idNumb,
+	}
+
+	tmpl, err := template.ParseFiles(path.Join("views", "product.html"), path.Join("views", "layout.html"))
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error is happening", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl.Execute(w, data)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error is happening", http.StatusInternalServerError)
+		return
+	}
 }
